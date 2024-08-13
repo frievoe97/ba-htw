@@ -15,10 +15,12 @@ Before starting, ensure you have the following installed on your machine:
 
 You need to set up the following environment variables in a `.env` file in the project root:
 
+```
 MYSQL_ROOT_PASSWORD=your_root_password
 MYSQL_DATABASE=your_database_name
 MYSQL_USER=your_database_user
 MYSQL_PASSWORD=your_user_password
+```
 
 ## Starting the Project
 
