@@ -1,0 +1,2 @@
+device_id,measurement_id,room_name,room_id,predict_room,distance,router_selection,handle_missing_values_strategy,router_presence_threshold,router_rssi_threshold,value_scaling_strategy,algorithm,algorithm_value,duration,correct
+esp_32_008,67,WH_C_351,5,WH_C_351,0.5166666666666667,all,-100,0,-100,none,random_forest,21,1.3103058338165283,True

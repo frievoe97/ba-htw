@@ -156,12 +156,12 @@ def compare_predictions(data, num_measurements, url_predict, parameters, paramet
             # print(f"Remaining room measurements: {remaining_room_measurements}")
 
             start_prediction_time = time.time()
+            print(param_values)
             result = predict_room(measurement, param_values, url_predict, remaining_corridor_measurements=remaining_corridor_measurements, remaining_room_measurements=remaining_room_measurements)
 
             if result:
                 prediction = result.get("room_name")
                 distance = result.get("distance")
-                optional_value = result.get("optional_value")
                 end_prediction_time = time.time()
                 duration = end_prediction_time - start_prediction_time
                 correct = (prediction == actual_room)
@@ -173,7 +173,7 @@ def compare_predictions(data, num_measurements, url_predict, parameters, paramet
                 print(f"Prediction with params ({params_str}): {prediction} (took {duration:.2f} seconds) (distance: {distance}))")
 
                 results.append([
-                    device_id, measurement_id, actual_room, room_id, prediction, distance, optional_value,
+                    device_id, measurement_id, actual_room, room_id, prediction, distance,
                     *param_values.values(), duration, correct
                 ])
 
@@ -196,7 +196,7 @@ def write_to_csv(results, filename, parameter_names):
         parameter_names (list): List of parameter names.
     """
     headers = [
-        "device_id", "measurement_id", "room_name", "room_id", "predict_room", "distance", "optional_value",
+        "device_id", "measurement_id", "room_name", "room_id", "predict_room", "distance",
         *parameter_names, "duration", "correct"
     ]
     with open(filename, mode='w', newline='') as file:

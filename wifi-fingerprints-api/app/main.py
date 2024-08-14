@@ -157,6 +157,8 @@ def predict_room(
     db: Session = Depends(get_db)
 ):
     logger.info("Predicting room")
+    print(data)
+    logger.info(f"Data: {data}")
     routers = data.routers
     ignore_measurements = data.ignore_measurements
 
@@ -178,6 +180,15 @@ def predict_room(
     c_value = data.c_value
     gamma_value = data.gamma_value
     max_depth = data.max_depth
+
+    max_features = data.max_features
+
+    if max_depth == "None":
+        max_depth = None  
+
+    if max_features == "None":
+        max_features = None          
+
 
     # Placeholder for actual data processing and prediction logic
     received_data = process_received_data(routers)
@@ -239,7 +250,7 @@ def predict_room(
     elif algorithm == 'knn_euclidean':
         predicted_room, distance = knn(X, X_new, y, k_value, metric='euclidean', weights=weights)
     elif algorithm == 'random_forest':
-        predicted_room, distance = random_forest(X, X_new, y, n_estimators, max_depth)
+        predicted_room, distance = random_forest(X, X_new, y, n_estimators, max_depth, max_features)
     elif algorithm == 'svm_linear':
         predicted_room, distance, optional_value = svm(X, X_new, y, C=c_value, kernel='linear', gamma=gamma_value)
     elif algorithm == 'svm_rbf':

@@ -401,7 +401,7 @@ def svm(X, X_new, y, kernel='rbf', C=1.0, gamma='scale'):
         return []
 
 
-def random_forest(X, X_new, y, n_estimators=100, max_depth=None):
+def random_forest(X, X_new, y, n_estimators=100, max_depth=None, max_features='sqrt'):
     """
     Perform Random Forest to find the nearest room based on received data.
 
@@ -419,7 +419,7 @@ def random_forest(X, X_new, y, n_estimators=100, max_depth=None):
     # logger = logging.getLogger(__name__)
 
     try:
-        rf_model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
+        rf_model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, max_features=max_features)
         rf_model.fit(X, y)
         # logger.info(f"Number of features: {rf_model.n_features_}")
         proba = rf_model.predict_proba(X_new)

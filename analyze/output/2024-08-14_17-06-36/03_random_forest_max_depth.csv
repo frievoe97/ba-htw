@@ -1,0 +1,1 @@
+device_id,measurement_id,room_name,room_id,predict_room,distance,router_selection,handle_missing_values_strategy,router_presence_threshold,router_rssi_threshold,value_scaling_strategy,algorithm,algorithm_value,duration,correct

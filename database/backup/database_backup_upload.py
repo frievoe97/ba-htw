@@ -9,7 +9,7 @@ csv_file_path = 'backup_without_corridor.csv'
 # IP addresses
 ip_address_1 = "141.45.212.246"
 ip_address_2 = "127.0.0.1"
-current_ip = ip_address_1  # Set the IP address to be used
+current_ip = ip_address_2  # Set the IP address to be used
 
 port = 8000
 

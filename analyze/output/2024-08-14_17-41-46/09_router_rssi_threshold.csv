@@ -1,0 +1,16 @@
+device_id,measurement_id,room_name,room_id,predict_room,distance,router_selection,handle_missing_values_strategy,value_scaling_strategy,n_estimators,max_depth,algorithm,algorithm_value,duration,correct
+esp_32_300,72,WH_C_351,5,WH_C_351,28.0178514522438,eduroam,-100,none,50,9,knn_euclidean,5,0,1.1875720024108887,True
+esp_32_300,72,WH_C_351,5,WH_C_351,28.0178514522438,eduroam,-100,none,50,9,knn_euclidean,7,0,1.179271936416626,True
+esp_32_300,72,WH_C_351,5,WH_C_351,28.0178514522438,eduroam,-100,none,50,9,knn_euclidean,9,0,1.1839971542358398,True
+esp_32_300,72,WH_C_351,5,WH_C_351,0.03672486453943408,eduroam,-100,none,50,9,knn_sorensen,5,0,1.1823289394378662,True
+esp_32_300,72,WH_C_351,5,WH_C_351,0.03672486453943408,eduroam,-100,none,50,9,knn_sorensen,7,0,1.2588319778442383,True
+esp_32_300,72,WH_C_351,5,WH_C_351,0.03672486453943408,eduroam,-100,none,50,9,knn_sorensen,9,0,1.1893689632415771,True
+esp_32_300,72,WH_C_351,5,WH_C_351,0.48,eduroam,-100,none,50,9,random_forest,0.8,0,1.190026044845581,True
+esp_32_300,72,WH_C_351,5,WH_C_351,0.56,eduroam,-100,none,50,9,random_forest,2,0,1.2019248008728027,True
+esp_32_300,72,WH_C_351,5,WH_C_351,0.42,eduroam,-100,none,50,9,random_forest,8,0,1.1882269382476807,True
+esp_32_300,72,WH_C_351,5,WH_C_351,0.7700383341985875,eduroam,-100,none,50,9,svm_linear,0.001,0.25,1.1893119812011719,True
+esp_32_300,72,WH_C_351,5,WH_C_350,0.870020839685932,eduroam,-100,none,50,9,svm_linear,0.005,0.25,1.1694071292877197,False
+esp_32_300,72,WH_C_351,5,WH_C_351,0.7776918521159963,eduroam,-100,none,50,9,svm_linear,0.01,0.25,1.1926350593566895,True
+esp_32_300,72,WH_C_351,5,WH_C_335,0.8667797132803313,eduroam,-100,none,50,9,svm_rbf,5.0,0.25,1.2006680965423584,False
+esp_32_300,72,WH_C_351,5,WH_C_335,0.8615738615941724,eduroam,-100,none,50,9,svm_rbf,1.0,0.25,1.2005152702331543,False
+esp_32_300,72,WH_C_351,5,WH_C_350,0.8677061463705305,eduroam,-100,none,50,9,svm_rbf,0.5,0.25,1.192920207977295,False

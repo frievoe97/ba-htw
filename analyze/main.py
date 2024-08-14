@@ -71,7 +71,7 @@ def main():
             parameter_names = list(api_parameters.keys()) + ["algorithm_value"]
             results = compare_predictions(data, num_measurements, url_predict, api_parameters, parameter_names, rooms,
                                           corridors)
-            filename = os.path.join(output_dir, f"{step}_{parameters['name']}.csv")
+            filename = os.path.join(output_dir, f"{parameters['name']}.csv")
             write_to_csv(results, filename, parameter_names)
             print(f"Results have been written to {filename}")
 

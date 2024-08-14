@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Union
 
 class RouterData(BaseModel):
     """
@@ -63,5 +63,6 @@ class PredictData(BaseModel):
     weights: Optional[str] = 'uniform'
     n_estimators: Optional[int] = 300
     c_value: Optional[float] = 1.0
-    gamma_value: Optional[float] = 1.0
-    max_depth: Optional[int] = None
+    gamma_value: Optional[str] = "auto"
+    max_depth: Optional[Union[int, str]] = "None"
+    max_features: Optional[Union[int, float, str]] = "sqrt"

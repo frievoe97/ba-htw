@@ -1,0 +1,13 @@
+device_id,measurement_id,room_name,room_id,predict_room,distance,router_selection,handle_missing_values_strategy,router_presence_threshold,router_rssi_threshold,value_scaling_strategy,algorithm,algorithm_value,duration,correct
+esp_32_106,25,WH_C_335,2,WH_C_334,0.17218500841262524,all,-100,0,-100,none,random_forest,1,1.295417070388794,False
+esp_32_106,25,WH_C_335,2,WH_C_334,0.3562294407174161,all,-100,0,-100,none,random_forest,3,1.3554041385650635,False
+esp_32_106,25,WH_C_335,2,WH_C_334,0.3723076052103125,all,-100,0,-100,none,random_forest,5,1.3145380020141602,False
+esp_32_106,25,WH_C_335,2,WH_C_335,0.3707733747733747,all,-100,0,-100,none,random_forest,7,1.3344142436981201,True
+esp_32_106,25,WH_C_335,2,WH_C_335,0.33,all,-100,0,-100,none,random_forest,9,1.3659999370574951,True
+esp_32_106,25,WH_C_335,2,WH_C_334,0.3466666666666667,all,-100,0,-100,none,random_forest,11,1.3637409210205078,False
+esp_32_106,25,WH_C_335,2,WH_C_335,0.34,all,-100,0,-100,none,random_forest,13,1.3455297946929932,True
+esp_32_106,25,WH_C_335,2,WH_C_335,0.4066666666666667,all,-100,0,-100,none,random_forest,15,1.325958251953125,True
+esp_32_106,25,WH_C_335,2,WH_C_335,0.3466666666666667,all,-100,0,-100,none,random_forest,17,1.350748062133789,True
+esp_32_106,25,WH_C_335,2,WH_C_335,0.36333333333333334,all,-100,0,-100,none,random_forest,19,1.3126611709594727,True
+esp_32_106,25,WH_C_335,2,WH_C_335,0.42333333333333334,all,-100,0,-100,none,random_forest,21,1.3813230991363525,True
+esp_32_106,25,WH_C_335,2,WH_C_335,0.35,all,-100,0,-100,none,random_forest,None,1.3196029663085938,True
