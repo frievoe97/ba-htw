@@ -1,7 +1,7 @@
 import logging
 import os
 import time
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Body
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import OperationalError
 from prometheus_fastapi_instrumentator import Instrumentator
@@ -16,6 +16,35 @@ from utils import process_received_data, remove_non_eduroam_bssids, remove_unrec
     value_scaling, knn, random_forest, svm
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+
+EXAMPLE_PREDICT_DATA = {
+            "routers": [
+                {"bssid": "dc:b8:08:c9:54:a1", "signal_strength": -88, "ssid": "HowToUseEduroam"},
+                {"bssid": "dc:b8:08:c9:54:a2", "signal_strength": -88, "ssid": "Gast@HTW"},
+                {"bssid": "02:2a:da:c8:29:9c", "signal_strength": -90, "ssid": "HP51417C"},
+                {"bssid": "dc:b8:08:c9:4b:e1", "signal_strength": -85, "ssid": "HowToUseEduroam"},
+                {"bssid": "dc:b8:08:c9:4b:e2", "signal_strength": -85, "ssid": "Gast@HTW"},
+                {"bssid": "dc:b8:08:c9:4b:e0", "signal_strength": -85, "ssid": "eduroam"},
+                {"bssid": "2c:3a:fd:0e:83:f1", "signal_strength": -84, "ssid": "NAT-FZTD009"},
+                {"bssid": "dc:b8:08:c9:5e:c2", "signal_strength": -89, "ssid": "Gast@HTW"},
+                {"bssid": "dc:b8:08:c9:38:b0", "signal_strength": -84, "ssid": "eduroam"},
+                {"bssid": "c8:7f:54:39:6e:f0", "signal_strength": -89, "ssid": "HTW_FRL"},
+                {"bssid": "00:09:9a:00:b6:43", "signal_strength": -54, "ssid": "ELTX1001901"},
+                {"bssid": "dc:b8:08:c9:04:a0", "signal_strength": -64, "ssid": "eduroam"},
+                {"bssid": "dc:b8:08:c9:04:a2", "signal_strength": -63, "ssid": "Gast@HTW"},
+                {"bssid": "dc:b8:08:c9:04:a1", "signal_strength": -63, "ssid": "HowToUseEduroam"},
+                {"bssid": "dc:b8:08:c9:04:b0", "signal_strength": -65, "ssid": "eduroam"},
+                {"bssid": "dc:b8:08:c9:10:90", "signal_strength": -81, "ssid": "eduroam"},
+                {"bssid": "dc:b8:08:c8:fe:e1", "signal_strength": -80, "ssid": "HowToUseEduroam"},
+                {"bssid": "dc:b8:08:c8:fe:e2", "signal_strength": -80, "ssid": "Gast@HTW"},
+                {"bssid": "dc:b8:08:c8:fe:e0", "signal_strength": -81, "ssid": "eduroam"},
+                {"bssid": "dc:b8:08:c8:fe:f0", "signal_strength": -87, "ssid": "eduroam"},
+                {"bssid": "dc:b8:08:c9:56:41", "signal_strength": -88, "ssid": "HowToUseEduroam"},
+                {"bssid": "dc:b8:08:c9:56:40", "signal_strength": -88, "ssid": "eduroam"},
+                {"bssid": "34:64:a9:d6:43:f1", "signal_strength": -91, "ssid": "DIRECT-F0-HP Officejet 5740"},
+                {"bssid": "dc:b8:08:c9:56:50", "signal_strength": -89, "ssid": "eduroam"}
+            ]
+        }
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -121,7 +150,12 @@ def add_measurement(data: MeasurementData, db: Session = Depends(get_db)):
     return {"message": "Measurement added successfully"}
 
 @app.post("/measurements/predict", response_model=dict)
-def predict_room(data: PredictData, db: Session = Depends(get_db)):
+def predict_room(
+    data: PredictData = Body(
+        example=EXAMPLE_PREDICT_DATA
+    ),
+    db: Session = Depends(get_db)
+):
     logger.info("Predicting room")
     routers = data.routers
     ignore_measurements = data.ignore_measurements
@@ -258,6 +292,161 @@ def get_all_measurements(db: Session = Depends(get_db)):
         })
     logger.info("All measurements fetched successfully")
     return result
+
+@app.get("/rooms/all", response_model=List[dict])
+def get_all_rooms(db: Session = Depends(get_db)):
+    logger.info("Fetching all rooms")
+    rooms = db.query(Room).all()
+
+    result = []
+    for room in rooms:
+        result.append({
+            'room_id': room.room_id,
+            'room_name': room.room_name,
+            'description': room.description,
+            'coordinates': room.coordinates,
+            'picture_path': room.picture_path,
+            'additional_info': room.additional_info
+        })
+    logger.info("All rooms fetched successfully")
+    return result
+
+@app.get("/rooms/{room_id}", response_model=dict)
+def get_room_by_id(room_id: int, db: Session = Depends(get_db)):
+    logger.info(f"Fetching room with ID {room_id}")
+    room = db.query(Room).filter_by(room_id=room_id).first()
+
+    if not room:
+        logger.error(f"Room with ID {room_id} not found")
+        raise HTTPException(status_code=404, detail="Room not found")
+
+    result = {
+        'room_id': room.room_id,
+        'room_name': room.room_name,
+        'description': room.description,
+        'coordinates': room.coordinates,
+        'picture_path': room.picture_path,
+        'additional_info': room.additional_info
+    }
+    logger.info(f"Room with ID {room_id} fetched successfully")
+    return result
+
+
+@app.get("/routers/all", response_model=List[dict])
+def get_all_routers(db: Session = Depends(get_db)):
+    logger.info("Fetching all routers")
+    routers = db.query(Router).all()
+
+    result = []
+    for router in routers:
+        result.append({
+            'router_id': router.router_id,
+            'ssid': router.ssid,
+            'bssid': router.bssid
+        })
+    logger.info("All routers fetched successfully")
+    return result
+
+@app.get("/measurements/all", response_model=List[dict])
+def get_all_measurements(db: Session = Depends(get_db)):
+    logger.info("Fetching all measurements")
+    measurements = db.query(
+        Measurement.measurement_id,
+        Measurement.timestamp,
+        Measurement.device_id,
+        Measurement.room_id,
+        Room.room_name
+    ).join(Room, Measurement.room_id == Room.room_id).all()
+
+    result = []
+    for measurement in measurements:
+        routers = db.query(MeasurementRouter).filter_by(measurement_id=measurement.measurement_id).all()
+        router_data = []
+        for router in routers:
+            router_info = db.query(Router).filter_by(router_id=router.router_id).first()
+            router_data.append({
+                'bssid': router_info.bssid,
+                'ssid': router_info.ssid,
+                'signal_strength': router.signal_strength
+            })
+
+        # Convert timestamp to seconds since epoch
+        timestamp_seconds = int(measurement.timestamp.timestamp())
+
+        result.append({
+            'measurement_id': measurement.measurement_id,
+            'timestamp': timestamp_seconds,
+            'device_id': measurement.device_id,
+            'room_id': measurement.room_id,
+            'room_name': measurement.room_name,
+            'routers': router_data
+        })
+    logger.info("All measurements fetched successfully")
+    return result
+
+@app.get("/measurements/{measurement_id}", response_model=dict)
+def get_measurement_by_id(measurement_id: int, db: Session = Depends(get_db)):
+    logger.info(f"Fetching measurement with ID {measurement_id}")
+    measurement = db.query(Measurement).filter_by(measurement_id=measurement_id).first()
+
+    if not measurement:
+        logger.error(f"Measurement with ID {measurement_id} not found")
+        raise HTTPException(status_code=404, detail="Measurement not found")
+
+    routers = db.query(MeasurementRouter).filter_by(measurement_id=measurement.measurement_id).all()
+    router_data = []
+    for router in routers:
+        router_info = db.query(Router).filter_by(router_id=router.router_id).first()
+        router_data.append({
+            'bssid': router_info.bssid,
+            'ssid': router_info.ssid,
+            'signal_strength': router.signal_strength
+        })
+
+    timestamp_seconds = int(measurement.timestamp.timestamp())
+
+    result = {
+        'measurement_id': measurement.measurement_id,
+        'timestamp': timestamp_seconds,
+        'device_id': measurement.device_id,
+        'room_id': measurement.room_id,
+        'routers': router_data
+    }
+    logger.info(f"Measurement with ID {measurement_id} fetched successfully")
+    return result
+
+@app.get("/routers/{router_id}", response_model=dict)
+def get_router_by_id(router_id: int, db: Session = Depends(get_db)):
+    logger.info(f"Fetching router with ID {router_id}")
+    router = db.query(Router).filter_by(router_id=router_id).first()
+
+    if not router:
+        logger.error(f"Router with ID {router_id} not found")
+        raise HTTPException(status_code=404, detail="Router not found")
+
+    result = {
+        'router_id': router.router_id,
+        'ssid': router.ssid,
+        'bssid': router.bssid
+    }
+    logger.info(f"Router with ID {router_id} fetched successfully")
+    return result
+
+@app.post("/reset-database", response_model=dict)
+def reset_database(db: Session = Depends(get_db)):
+    try:
+        # Drop all tables
+        Base.metadata.drop_all(bind=engine)
+
+        # Recreate all tables
+        Base.metadata.create_all(bind=engine)
+
+        logger.info("Database has been reset successfully")
+        return {"message": "Database has been reset successfully"}
+    except Exception as e:
+        logger.error(f"Error resetting the database: {e}")
+        raise HTTPException(status_code=500, detail="Error resetting the database")
+
 
 def handle_get_room_name_by_id(room_id: int, db: Session):
     """
