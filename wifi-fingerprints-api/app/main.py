@@ -443,20 +443,24 @@ def get_router_by_id(router_id: int, db: Session = Depends(get_db)):
     logger.info(f"Router with ID {router_id} fetched successfully")
     return result
 
-@app.post("/reset-database", response_model=dict)
+@app.post("/reset-database")
 def reset_database(db: Session = Depends(get_db)):
     try:
-        # Drop all tables
-        Base.metadata.drop_all(bind=engine)
+        # Reihenfolge beachten: Zuerst Tabellen mit Fremdschlüsseln leeren
+        db.query(MeasurementRouter).delete()
+        db.query(Measurement).delete()
+        db.query(Router).delete()
+        db.query(Room).delete()
+        
+        db.commit()
 
-        # Recreate all tables
-        Base.metadata.create_all(bind=engine)
-
-        logger.info("Database has been reset successfully")
-        return {"message": "Database has been reset successfully"}
+        logger.info("Datenbank erfolgreich zurückgesetzt (Daten gelöscht)")
+        return {"message": "Database reset successfully"}
     except Exception as e:
-        logger.error(f"Error resetting the database: {e}")
-        raise HTTPException(status_code=500, detail="Error resetting the database")
+        db.rollback()
+        logger.error(f"Fehler beim Zurücksetzen der Datenbank: {e}")
+        raise HTTPException(status_code=500, detail="Fehler beim Zurücksetzen der Datenbank")
+
 
 
 def handle_get_room_name_by_id(room_id: int, db: Session):
